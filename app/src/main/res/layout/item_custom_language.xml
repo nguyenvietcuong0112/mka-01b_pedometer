@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_12sdp"
+    android:id="@+id/ctr_1"
+    android:background="@drawable/bg_corner_10dp_with_stroke"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/_8sdp"
+    android:paddingVertical="@dimen/_12sdp">
+
+    <ImageView
+        android:id="@+id/imgFlag"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerInside"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:src="@drawable/flag_en"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="@string/english"
+        android:textColor="#1B1B1B"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="@id/imgFlag"
+        app:layout_constraintStart_toEndOf="@id/imgFlag"
+        app:layout_constraintTop_toTopOf="@id/imgFlag" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animHand"
+        android:visibility="visible"
+        android:layout_width="@dimen/_36sdp"
+        android:layout_height="@dimen/_36sdp"
+        android:layout_alignParentEnd="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:layout_constraintBottom_toBottomOf="@id/imgFlag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imgFlag"
+        app:lottie_rawRes="@raw/hand" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

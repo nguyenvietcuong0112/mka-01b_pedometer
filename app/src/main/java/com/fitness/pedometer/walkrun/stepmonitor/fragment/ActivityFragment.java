@@ -1,0 +1,1214 @@
+package com.fitness.pedometer.walkrun.stepmonitor.fragment;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.JointType;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
+import com.mallegan.ads.callback.InterCallback;
+import com.mallegan.ads.callback.NativeCallback;
+import com.mallegan.ads.util.Admob;
+import com.fitness.pedometer.walkrun.stepmonitor.R;
+import com.fitness.pedometer.walkrun.stepmonitor.activity.ActivityHistoryActivity;
+import com.fitness.pedometer.walkrun.stepmonitor.activity.nativefull.ActivityFullCallback;
+import com.fitness.pedometer.walkrun.stepmonitor.activity.nativefull.ActivityLoadNativeFullV2;
+import com.fitness.pedometer.walkrun.stepmonitor.model.DatabaseHelper;
+import com.fitness.pedometer.walkrun.stepmonitor.activity.RunningActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.fitness.pedometer.walkrun.stepmonitor.utils.SharePreferenceUtils;
+
+
+public class ActivityFragment extends Fragment implements OnMapReadyCallback {
+
+    public static ActivityFragment newInstance(boolean trackingMode) {
+        ActivityFragment fragment = new ActivityFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_TRACKING_MODE, trackingMode);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private static final String ARG_TRACKING_MODE = "arg_tracking_mode";
+
+    private static final String MAP_VIEW_BUNDLE_KEY = "activity_map_view";
+    private static final String PREF_RECENT_ACTIVITY = "recent_activity_pref";
+    private static final String KEY_RECENT_DISTANCE = "recent_distance";
+    private static final String KEY_RECENT_DURATION = "recent_duration";
+    private static final String KEY_RECENT_STEPS = "recent_steps";
+    private static final String KEY_RECENT_TIMESTAMP = "recent_timestamp";
+    private static final String KEY_RECENT_CALORIES = "recent_calories";
+
+    private static final double KCAL_PER_STEP = 0.04;
+    private static final float FIXED_ZOOM_LEVEL = 17.5f;
+
+    private static final float MIN_ACCURACY_METERS = 25f;
+    private static final float MIN_DISTANCE_METERS = 4f;
+    private static final float MAX_SPEED_KMH = 28f;
+
+    private enum TrackingState {IDLE, COUNTDOWN, RUNNING, PAUSED}
+    private TrackingState trackingState = TrackingState.IDLE;
+    private boolean isTrackingMode = false;
+
+    private FrameLayout countdownOverlay,frAds;
+    private TextView countdownText;
+
+    private View headerBar;
+    private LinearLayout recentCard,listRecent;
+    private TextView emptyRecentText;
+    private View recentHeader;
+    private NestedScrollView scrollView;
+    private MapView mapView;
+    private GoogleMap googleMap;
+    private Polyline routePolyline;
+    private Marker liveMarker;
+    private Marker startMarker;
+
+    private TextView timerText, stepsText, caloriesText, durationText, distanceText;
+    private TextView activityViewMore;
+    private TextView recentTitleText, recentTimeText, recentCaloriesText, recentDurationText, recentDistanceText;
+
+    private AppCompatButton startButton, resumeButton, finishButton;
+
+    private ImageView pauseButton;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
+    private LocationRequest locationRequest;
+    private Location lastValidLocation;
+
+    private SensorManager sensorManager;
+    private Sensor stepSensor;
+    private int stepsAtSessionStart = 0;
+    private int totalSensorSteps = 0;
+    private int detectorAccumulatedSteps = 0;
+    private boolean stepSensorIsCounter = false;
+    private boolean waitingForFirstCounterEvent = false;
+
+    private final List<LatLng> routePoints = new ArrayList<>();
+    private double distanceMeters = 0d;
+    private long sessionStartMillis = 0L;
+    private long accumulatedTimeMillis = 0L;
+    private boolean isFirstLocation = true;
+
+    private final Handler timerHandler = new Handler(Looper.getMainLooper());
+
+    private ActivityResultLauncher<String[]> locationPermissionLauncher;
+    private ActivityResultLauncher<String> activityRecognitionLauncher;
+
+    private DatabaseHelper databaseHelper;
+
+    private final Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (trackingState == TrackingState.RUNNING) {
+                updateStats();
+                timerHandler.postDelayed(this, 1000);
+            }
+        }
+    };
+
+
+
+    private FrameLayout mapLoadingOverlay;
+    private boolean isMapReady = false;
+
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            isTrackingMode = args.getBoolean(ARG_TRACKING_MODE, false);
+        }
+
+        locationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    Boolean fineLocationGranted = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
+                    Boolean coarseLocationGranted = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+                    if ((fineLocationGranted != null && fineLocationGranted)
+                            || (coarseLocationGranted != null && coarseLocationGranted)) {
+                        enableMyLocationLayer();
+
+                        if (googleMap != null) {
+                            moveToCurrentLocation();
+                        }
+
+                        if (trackingState == TrackingState.RUNNING) {
+                            startLocationUpdates();
+                        }
+                    } else {
+                        if (isAdded()) {
+                            Toast.makeText(requireContext(),
+                                    "Location permission required to track the run!",
+                                    Toast.LENGTH_LONG).show();
+                            if (trackingState == TrackingState.RUNNING) {
+                                pauseSession();
+                            }
+                        }
+                    }
+                }
+        );
+
+        activityRecognitionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                granted -> {
+                    if (!granted) {
+                        Toast.makeText(requireContext(),
+                                "Activity recognition permission denied — step counting may be limited.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_activity, container, false);
+        databaseHelper = new DatabaseHelper(requireContext());
+        bindViews(view);
+        setupButtons();
+        setupLocation();
+        setupStepSensor();
+        initMap(savedInstanceState);
+        updateRecentCard();
+        updateButtonState();
+        updateStats();
+        return view;
+    }
+
+    private void bindViews(View root) {
+        mapView = root.findViewById(R.id.activityMapView);
+        timerText = root.findViewById(R.id.activityTimerValue);
+        stepsText = root.findViewById(R.id.activityStepsValue);
+        caloriesText = root.findViewById(R.id.activityCaloriesValue);
+        durationText = root.findViewById(R.id.activityDurationValue);
+        distanceText = root.findViewById(R.id.activityDistanceValue);
+        countdownOverlay = root.findViewById(R.id.countdownOverlay);
+        countdownText = root.findViewById(R.id.countdownText);
+        headerBar = root.findViewById(R.id.headerBar);
+        recentCard = root.findViewById(R.id.activityRecentCard);
+        emptyRecentText = root.findViewById(R.id.activityEmptyRecentText);
+        recentHeader = root.findViewById(R.id.recentHeader);
+        scrollView = root.findViewById(R.id.activityScroll);
+        frAds = root.findViewById(R.id.frAds);
+
+        listRecent = root.findViewById(R.id.listRecent);
+
+        recentTitleText = root.findViewById(R.id.activityRecentTitle);
+        recentTimeText = root.findViewById(R.id.activityRecentTime);
+        recentCaloriesText = root.findViewById(R.id.activityRecentCalories);
+        recentDurationText = root.findViewById(R.id.activityRecentDuration);
+        recentDistanceText = root.findViewById(R.id.activityRecentDistance);
+        emptyRecentText = root.findViewById(R.id.activityEmptyRecentText);
+
+        startButton = root.findViewById(R.id.activityStartButton);
+        pauseButton = root.findViewById(R.id.activityPauseButton);
+        resumeButton = root.findViewById(R.id.activityResumeButton);
+        finishButton = root.findViewById(R.id.activityFinishButton);
+
+        mapView = root.findViewById(R.id.activityMapView);
+        mapLoadingOverlay = root.findViewById(R.id.mapLoadingOverlay);
+
+        activityViewMore = root.findViewById(R.id.activityViewMore);
+        if (activityViewMore != null) {
+            activityViewMore.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), ActivityHistoryActivity.class);
+                startActivity(intent);
+            });
+        }
+    }
+
+
+    private void showTrackingMode() {
+        headerBar.setVisibility(View.GONE);
+        recentHeader.setVisibility(View.GONE);
+        recentCard.setVisibility(View.GONE);
+        emptyRecentText.setVisibility(View.GONE);
+        scrollView.setNestedScrollingEnabled(false);
+
+        if (isMapReady) {
+            ViewGroup.LayoutParams params = mapView.getLayoutParams();
+            params.height = (int) (450 * getResources().getDisplayMetrics().density);
+            mapView.setLayoutParams(params);
+        }
+    }
+
+    private void showNormalMode() {
+        headerBar.setVisibility(View.VISIBLE);
+        recentHeader.setVisibility(View.VISIBLE);
+        recentCard.setVisibility(View.VISIBLE);
+        emptyRecentText.setVisibility(recentCard.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        scrollView.setNestedScrollingEnabled(true);
+
+        ViewGroup.LayoutParams params = mapView.getLayoutParams();
+        params.height = (int) (260 * getResources().getDisplayMetrics().density);
+        mapView.setLayoutParams(params);
+
+        updateRecentCard();
+    }
+
+    private void setupButtons() {
+        startButton.setText(isTrackingMode ? R.string.start_running : R.string.start);
+        if (isTrackingMode) {
+            startButton.setOnClickListener(v -> startSession());
+            headerBar.setVisibility(View.GONE);
+            timerText.setVisibility(View.VISIBLE);
+            listRecent.setVisibility(View.GONE);
+        } else {
+            headerBar.setVisibility(View.VISIBLE);
+            timerText.setVisibility(View.GONE);
+            listRecent.setVisibility(View.VISIBLE);
+            startButton.setOnClickListener(v -> {
+                if (getActivity() != null) {
+                    Intent intent = new Intent(getActivity(), RunningActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+        pauseButton.setOnClickListener(v -> pauseSession());
+        resumeButton.setOnClickListener(v -> resumeSession());
+        finishButton.setOnClickListener(v -> {
+            if (!SharePreferenceUtils.isOrganic(requireActivity())) {
+                Admob.getInstance().loadAndShowInter((AppCompatActivity) getContext(),getString(R.string.inter_finish), 0 , 30000, new InterCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        ActivityLoadNativeFullV2.open(getActivity(), getString(R.string.native_full_inter_finish), new ActivityFullCallback() {
+                            @Override
+                            public void onResultFromActivityFull() {
+                                finishSession();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        ActivityLoadNativeFullV2.open(getActivity(), getString(R.string.native_full_inter_finish), new ActivityFullCallback() {
+                            @Override
+                            public void onResultFromActivityFull() {
+                                finishSession();
+                            }
+                        });
+                    }
+                } );
+
+            } else {
+                finishSession();
+            }
+
+        });
+    }
+
+    private void initMap(Bundle savedInstanceState) {
+        if (mapView == null) return;
+
+        Bundle mapBundle = null;
+        if (savedInstanceState != null) {
+            mapBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        }
+        mapView.onCreate(mapBundle);
+        mapView.getMapAsync(this);
+    }
+
+    private void setupLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+
+        locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 4000)
+                .setMinUpdateIntervalMillis(2000)
+                .setMaxUpdateDelayMillis(8000)
+                .build();
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult result) {
+                for (Location location : result.getLocations()) {
+                    if (location != null) handleLocationUpdate(location);
+                }
+            }
+        };
+    }
+
+    private void setupStepSensor() {
+        sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager != null) {
+            Sensor counter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            if (counter != null) {
+                stepSensor = counter;
+                stepSensorIsCounter = true;
+            } else {
+                Sensor detector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+                if (detector != null) {
+                    stepSensor = detector;
+                    stepSensorIsCounter = false;
+                } else {
+                    Toast.makeText(requireContext(),
+                            "The device does not support automatic step counting (STEP_COUNTER/STEP_DETECTOR).",
+                            Toast.LENGTH_LONG).show();
+                    stepSensor = null;
+                }
+            }
+        }
+    }
+
+    private void startSession() {
+        if (!hasLocationPermission()) {
+            requestLocationPermission();
+            return;
+        }
+        if (stepSensor == null) {
+            Toast.makeText(requireContext(), "The device does not support step counting.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACTIVITY_RECOGNITION)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                activityRecognitionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
+                return;
+            }
+        }
+
+        trackingState = TrackingState.COUNTDOWN;
+        updateButtonState();
+        countdownOverlay.setVisibility(View.VISIBLE);
+
+        final String[] texts = {"3", "2", "1", "GO!"};
+        final int[] count = {0};
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (count[0] < texts.length) {
+                    countdownText.setText(texts[count[0]]);
+
+                    countdownText.setScaleX(0.5f);
+                    countdownText.setScaleY(0.5f);
+                    countdownText.setAlpha(0f);
+                    countdownText.animate()
+                            .scaleX(1.6f)
+                            .scaleY(1.6f)
+                            .alpha(1f)
+                            .setDuration(400)
+                            .withEndAction(() -> {
+                                countdownText.animate()
+                                        .scaleX(1f)
+                                        .scaleY(1f)
+                                        .setDuration(300)
+                                        .start();
+
+                                count[0]++;
+                                handler.postDelayed(this, 1000);
+                            })
+                            .start();
+                } else {
+                    countdownOverlay.setVisibility(View.GONE);
+                    startSessionReal();
+                }
+            }
+        };
+
+        handler.post(runnable);
+    }
+
+    private void startSessionReal() {
+        resetSession();
+
+        trackingState = TrackingState.RUNNING;
+        sessionStartMillis = System.currentTimeMillis();
+        accumulatedTimeMillis = 0L;
+
+        if (stepSensorIsCounter) {
+            if (totalSensorSteps > 0) {
+                stepsAtSessionStart = totalSensorSteps;
+                waitingForFirstCounterEvent = false;
+            } else {
+                waitingForFirstCounterEvent = true;
+            }
+        } else {
+            detectorAccumulatedSteps = 0;
+        }
+
+        sensorManager.registerListener(stepSensorListener, stepSensor, SensorManager.SENSOR_DELAY_UI);
+        startLocationUpdates();
+        timerHandler.post(timerRunnable);
+        updateButtonState();
+        updateStats();
+        showTrackingMode();
+
+        // Ẩn nút back khi đang tracking
+        if (getActivity() instanceof RunningActivity) {
+            ((RunningActivity) getActivity()).setBackButtonVisible(false);
+        }
+
+        Toast.makeText(requireContext(), "Let's run!", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+    private void pauseSession() {
+        if (trackingState == TrackingState.RUNNING) {
+            accumulatedTimeMillis += System.currentTimeMillis() - sessionStartMillis;
+        }
+        trackingState = TrackingState.PAUSED;
+
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(stepSensorListener);
+        }
+
+        stopLocationUpdates();
+        timerHandler.removeCallbacks(timerRunnable);
+        updateButtonState();
+        updateStats();
+
+        Toast.makeText(requireContext(), "Paused", Toast.LENGTH_SHORT).show();
+    }
+
+    private void resumeSession() {
+
+        if (!hasLocationPermission()) {
+            requestLocationPermission();
+            return;
+        }
+
+        if (stepSensor == null) {
+            Toast.makeText(requireContext(),
+                    "Unable to continue: Device does not support step counting",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        trackingState = TrackingState.RUNNING;
+        sessionStartMillis = System.currentTimeMillis();
+        showTrackingMode();
+        if (stepSensorIsCounter) {
+            if (totalSensorSteps > 0) {
+            } else {
+                waitingForFirstCounterEvent = true;
+            }
+        } else {
+        }
+
+        if (sensorManager != null && stepSensor != null) {
+            sensorManager.registerListener(stepSensorListener, stepSensor, SensorManager.SENSOR_DELAY_UI);
+        }
+
+        startLocationUpdates();
+        timerHandler.post(timerRunnable);
+        updateButtonState();
+
+        Toast.makeText(requireContext(), "Continued", Toast.LENGTH_SHORT).show();
+    }
+
+    private void finishSession() {
+        if (trackingState == TrackingState.RUNNING) {
+            accumulatedTimeMillis += System.currentTimeMillis() - sessionStartMillis;
+        }
+        showNormalMode();
+        trackingState = TrackingState.IDLE;
+
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(stepSensorListener);
+        }
+
+        stopLocationUpdates();
+        timerHandler.removeCallbacks(timerRunnable);
+
+        if (distanceMeters >= 10 && getCurrentDuration() >= 10000) {
+            saveRecentSession();
+
+            int steps = getCurrentSteps();
+            double calories = steps * KCAL_PER_STEP;
+            long duration = getCurrentDuration();
+
+            long activityId = databaseHelper.saveActivity(steps, calories, duration, distanceMeters);
+
+            Log.d("ActivityFragment", "Saved activity with ID: " + activityId);
+
+            updateRecentCard();
+            syncSessionToDailySteps();
+            Toast.makeText(requireContext(),
+                    "Saved activity: " + formatDistance(distanceMeters),
+                    Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(requireContext(),
+                    "Activity too short, not saved",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        resetSession();
+        updateButtonState();
+        updateStats();
+
+        // Hiện lại nút back sau khi finish
+        if (getActivity() instanceof RunningActivity) {
+            ((RunningActivity) getActivity()).setBackButtonVisible(true);
+        }
+
+        if (isTrackingMode && getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+
+
+    private void syncSessionToDailySteps() {
+        if (!isAdded() || databaseHelper == null) return;
+
+        int steps = getCurrentSteps();
+        if (steps <= 0) return;
+
+        double calories = steps * KCAL_PER_STEP;
+        double distanceKm = distanceMeters / 1000d;
+        long timeMillis = getCurrentDuration();
+
+        databaseHelper.addToToday(steps, calories, distanceKm, timeMillis);
+    }
+
+    private void resetSession() {
+        distanceMeters = 0d;
+        accumulatedTimeMillis = 0L;
+        sessionStartMillis = 0L;
+        routePoints.clear();
+        lastValidLocation = null;
+        isFirstLocation = true;
+
+        if (routePolyline != null) {
+            routePolyline.remove();
+            routePolyline = null;
+        }
+        if (liveMarker != null) {
+            liveMarker.remove();
+            liveMarker = null;
+        }
+        if (startMarker != null) {
+            startMarker.remove();
+            startMarker = null;
+        }
+
+        if (stepSensorIsCounter) {
+            if (totalSensorSteps > 0) {
+                stepsAtSessionStart = totalSensorSteps;
+                waitingForFirstCounterEvent = false;
+            } else {
+                stepsAtSessionStart = 0;
+                waitingForFirstCounterEvent = true;
+            }
+        } else {
+            detectorAccumulatedSteps = 0;
+            stepsAtSessionStart = 0;
+            waitingForFirstCounterEvent = false;
+        }
+
+        updateStats();
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+        if (hasLocationPermission()) {
+            try {
+                fusedLocationClient.requestLocationUpdates(
+                        locationRequest,
+                        locationCallback,
+                        Looper.getMainLooper()
+                );
+            } catch (SecurityException e) {
+                e.printStackTrace();
+                Toast.makeText(requireContext(),
+                        "Location access error",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void stopLocationUpdates() {
+        try {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleLocationUpdate(@NonNull Location location) {
+        if (trackingState != TrackingState.RUNNING) return;
+
+        if (!location.hasAccuracy() || location.getAccuracy() > MIN_ACCURACY_METERS) return;
+
+        LatLng newPoint = new LatLng(location.getLatitude(), location.getLongitude());
+
+        if (lastValidLocation != null) {
+            float distance = location.distanceTo(lastValidLocation);
+
+            if (distance < MIN_DISTANCE_METERS) {
+                updateLiveMarker(newPoint);
+                return;
+            }
+
+            long timeDiff = location.getTime() - lastValidLocation.getTime();
+            if (timeDiff > 0) {
+                float speedKmh = (distance / timeDiff) * 3.6f;
+                if (speedKmh > MAX_SPEED_KMH) return;
+            }
+
+            distanceMeters += distance;
+        } else {
+            addStartMarker(newPoint);
+        }
+
+        lastValidLocation = location;
+        routePoints.add(newPoint);
+        updatePolyline();
+        updateLiveMarker(newPoint);
+        moveCameraSmooth(newPoint);
+        updateStats();
+    }
+
+    private void updatePolyline() {
+        if (googleMap == null || routePoints.isEmpty()) return;
+        if (routePolyline == null) {
+            routePolyline = googleMap.addPolyline(new PolylineOptions()
+                    .color(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                    .width(14f)
+                    .jointType(JointType.ROUND)
+                    .startCap(new RoundCap())
+                    .endCap(new RoundCap()));
+        }
+        routePolyline.setPoints(routePoints);
+    }
+
+    private void updateLiveMarker(LatLng point) {
+        if (googleMap == null) return;
+        if (liveMarker == null) {
+            BitmapDescriptor icon = bitmapDescriptorFromVector(requireContext(), R.drawable.ic_nav_activity, 0, 36, 36);
+            liveMarker = googleMap.addMarker(new MarkerOptions()
+                    .position(point)
+                    .title("Vị trí hiện tại")
+                    .flat(true)
+                    .icon(icon)
+                    .anchor(0.5f, 0.5f) // center icon on location
+            );
+        } else {
+            liveMarker.setPosition(point);
+        }
+    }
+
+    private void addStartMarker(LatLng point) {
+        if (googleMap != null) {
+            startMarker = googleMap.addMarker(new MarkerOptions()
+                    .position(point)
+                    .title("Điểm xuất phát"));
+        }
+    }
+
+
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId, int tintColor, int widthDp, int heightDp) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        if (vectorDrawable == null) return null;
+
+        // optional: tint
+        if (tintColor != 0) {
+            DrawableCompat.setTint(vectorDrawable, tintColor);
+        }
+
+        int widthPx = (int) (widthDp * context.getResources().getDisplayMetrics().density);
+        int heightPx = (int) (heightDp * context.getResources().getDisplayMetrics().density);
+
+        vectorDrawable.setBounds(0, 0, widthPx, heightPx);
+        Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    private void moveCameraSmooth(LatLng point) {
+        if (googleMap == null) return;
+
+        CameraPosition position = new CameraPosition.Builder()
+                .target(point)
+                .zoom(isFirstLocation ? FIXED_ZOOM_LEVEL : googleMap.getCameraPosition().zoom)
+                .tilt(30)
+                .build();
+
+        if (isFirstLocation) {
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(position));
+            isFirstLocation = false;
+        } else {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(point), 800, null);
+        }
+    }
+
+    private void updateStats() {
+        long duration = getCurrentDuration();
+        int steps = getCurrentSteps();
+        double calories = steps * KCAL_PER_STEP;
+
+        timerText.setText(formatElapsedTime(duration));
+        durationText.setText(formatElapsedTime(duration));
+        stepsText.setText(String.valueOf(steps));
+        caloriesText.setText(String.format(Locale.getDefault(), "%.1f", calories));
+        distanceText.setText(formatDistance(distanceMeters));
+    }
+
+
+    private int getCurrentSteps() {
+        if (stepSensor == null) return 0;
+
+        if (stepSensorIsCounter) {
+            if (waitingForFirstCounterEvent) return 0;
+            int result = Math.max(0, totalSensorSteps - stepsAtSessionStart);
+            return result;
+        } else {
+            return Math.max(0, detectorAccumulatedSteps);
+        }
+    }
+
+    private long getCurrentDuration() {
+        if (trackingState == TrackingState.RUNNING) {
+            return accumulatedTimeMillis + (System.currentTimeMillis() - sessionStartMillis);
+        }
+        return accumulatedTimeMillis;
+    }
+
+    private void saveRecentSession() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREF_RECENT_ACTIVITY, Context.MODE_PRIVATE);
+        int steps = getCurrentSteps();
+        double calories = steps * KCAL_PER_STEP;
+
+        prefs.edit()
+                .putFloat(KEY_RECENT_DISTANCE, (float) distanceMeters)
+                .putLong(KEY_RECENT_DURATION, getCurrentDuration())
+                .putInt(KEY_RECENT_STEPS, steps)
+                .putFloat(KEY_RECENT_CALORIES, (float) calories)
+                .putLong(KEY_RECENT_TIMESTAMP, System.currentTimeMillis())
+                .apply();
+    }
+
+    private void updateRecentCard() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREF_RECENT_ACTIVITY, Context.MODE_PRIVATE);
+        long timestamp = prefs.getLong(KEY_RECENT_TIMESTAMP, 0);
+        if (timestamp == 0) {
+            recentCard.setVisibility(View.GONE);
+            emptyRecentText.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        recentCard.setVisibility(View.VISIBLE);
+        emptyRecentText.setVisibility(View.GONE);
+
+        float dist = prefs.getFloat(KEY_RECENT_DISTANCE, 0);
+        long dur = prefs.getLong(KEY_RECENT_DURATION, 0);
+        int steps = prefs.getInt(KEY_RECENT_STEPS, 0);
+        float calories = prefs.getFloat(KEY_RECENT_CALORIES, 0);
+
+        recentTimeText.setText(new SimpleDateFormat("HH:mm - dd/MM/yyyy", Locale.getDefault()).format(new Date(timestamp)));
+        recentDistanceText.setText(formatDistance(dist));
+        recentDurationText.setText(formatElapsedTime(dur));
+        recentCaloriesText.setText(String.format(Locale.getDefault(), "%.1f", calories));
+    }
+
+    private String formatElapsedTime(long millis) {
+        long seconds = millis / 1000;
+        long h = seconds / 3600;
+        long m = (seconds % 3600) / 60;
+        long s = seconds % 60;
+        return h > 0 ? String.format("%02d:%02d:%02d", h, m, s) : String.format("%02d:%02d", m, s);
+    }
+
+    private String formatDistance(double meters) {
+        if (meters < 1000) {
+            return String.format(Locale.getDefault(), "%.0f m", meters);
+        }
+        return String.format(Locale.getDefault(), "%.2f km", meters / 1000d);
+    }
+
+    private void updateButtonState() {
+        if (!isTrackingMode) {
+            pauseButton.setVisibility(View.GONE);
+            resumeButton.setVisibility(View.GONE);
+            finishButton.setVisibility(View.GONE);
+            return;
+        }
+
+        startButton.setVisibility(trackingState == TrackingState.IDLE ? View.VISIBLE : View.GONE);
+
+        if (trackingState == TrackingState.RUNNING) {
+            pauseButton.setVisibility(View.VISIBLE);
+            resumeButton.setVisibility(View.GONE);
+            finishButton.setVisibility(View.GONE);
+        } else if (trackingState == TrackingState.PAUSED) {
+            pauseButton.setVisibility(View.GONE);
+            resumeButton.setVisibility(View.VISIBLE);
+            finishButton.setVisibility(View.VISIBLE);
+        } else {
+            pauseButton.setVisibility(View.GONE);
+            resumeButton.setVisibility(View.GONE);
+            finishButton.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean hasLocationPermission() {
+        Context context = getContext();
+        if (context == null) return false;
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                == android.content.pm.PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == android.content.pm.PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationPermission() {
+        locationPermissionLauncher.launch(new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    private void enableMyLocationLayer() {
+        if (googleMap == null) return;
+
+        if (hasLocationPermission()) {
+            try {
+                googleMap.setMyLocationEnabled(true);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        } else {
+            requestLocationPermission();
+        }
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap map) {
+        googleMap = map;
+        googleMap.getUiSettings().setZoomControlsEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        enableMyLocationLayer();
+        googleMap.setPadding(0, 0, 0, 200);
+
+        applyRetroMapTheme();
+
+
+        // Ẩn loading và hiện map với animation
+        hideMapLoading();
+
+        moveToCurrentLocation();
+        isMapReady = true;
+    }
+
+    private void applyRetroMapTheme() {
+        if (googleMap == null) return;
+
+        try {
+            // Sử dụng theme retro đã tạo
+            MapStyleOptions style = MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.map_style_retro
+            );
+
+            boolean success = googleMap.setMapStyle(style);
+            if (!success) {
+                Log.e("ActivityFragment", "Unable to apply map style");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("ActivityFragment", "Map style file not found", e);
+        }
+    }
+
+    private void hideMapLoading() {
+        if (mapLoadingOverlay != null && mapView != null) {
+            // Fade out loading overlay
+            mapLoadingOverlay.animate()
+                    .alpha(0f)
+                    .setDuration(300)
+                    .withEndAction(() -> mapLoadingOverlay.setVisibility(View.GONE))
+                    .start();
+
+            // Fade in map
+            mapView.animate()
+                    .alpha(1f)
+                    .setDuration(300)
+                    .start();
+        }
+    }
+    private void loadAds() {
+        if (!isAdded()) return;
+
+        Context ctx = getContext();
+        if (ctx == null) return;
+
+        if (!SharePreferenceUtils.isOrganic(ctx)) {
+
+            Admob.getInstance().loadNativeAd(ctx, getString(R.string.native_activity), new NativeCallback() {
+
+                @Override
+                public void onNativeAdLoaded(NativeAd nativeAd) {
+                    super.onNativeAdLoaded(nativeAd);
+
+                    // kiểm tra lại vì callback chạy async
+                    if (!isAdded() || getContext() == null) return;
+
+                    LayoutInflater inflater = LayoutInflater.from(getContext());
+                    NativeAdView adView = (NativeAdView) inflater.inflate(R.layout.layout_native_btn_top, null);
+
+                    frAds.removeAllViews();
+                    frAds.addView(adView);
+                    Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
+                }
+
+                @Override
+                public void onAdFailedToLoad() {
+                    super.onAdFailedToLoad();
+
+                    if (!isAdded()) return;
+                    frAds.setVisibility(View.GONE);
+                }
+            });
+
+        } else {
+            frAds.removeAllViews();
+            frAds.setVisibility(View.GONE);
+        }
+    }
+
+
+
+    @SuppressLint("MissingPermission")
+    private void moveToCurrentLocation() {
+        if (!hasLocationPermission() || googleMap == null) {
+            return;
+        }
+
+        try {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(requireActivity(), location -> {
+                        if (location != null && googleMap != null) {
+                            LatLng currentLatLng = new LatLng(
+                                    location.getLatitude(),
+                                    location.getLongitude()
+                            );
+
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(currentLatLng)
+                                    .zoom(FIXED_ZOOM_LEVEL)
+                                    .tilt(30)
+                                    .build();
+
+                            googleMap.animateCamera(
+                                    CameraUpdateFactory.newCameraPosition(cameraPosition),
+                                    800,
+                                    null
+                            );
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("ActivityFragment", "Failed to get current location", e);
+                    });
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isTracking() {
+        return trackingState == TrackingState.RUNNING || trackingState == TrackingState.PAUSED;
+    }
+
+    // Buộc dừng tracking (khi user chọn exit)
+    public void forceStopTracking() {
+        if (trackingState == TrackingState.RUNNING || trackingState == TrackingState.PAUSED) {
+            if (trackingState == TrackingState.RUNNING) {
+                accumulatedTimeMillis += System.currentTimeMillis() - sessionStartMillis;
+            }
+
+            trackingState = TrackingState.IDLE;
+
+            if (sensorManager != null) {
+                sensorManager.unregisterListener(stepSensorListener);
+            }
+
+            stopLocationUpdates();
+            timerHandler.removeCallbacks(timerRunnable);
+            resetSession();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadAds();
+        if (mapView != null) {
+            mapView.onResume();
+        }
+
+        if (googleMap != null && hasLocationPermission()) {
+            moveToCurrentLocation();
+        }
+
+        if (sensorManager != null && stepSensor != null && trackingState == TrackingState.RUNNING) {
+            sensorManager.registerListener(stepSensorListener, stepSensor, SensorManager.SENSOR_DELAY_UI);
+        }
+        if (trackingState == TrackingState.RUNNING) {
+            startLocationUpdates();
+            timerHandler.post(timerRunnable);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mapView != null) {
+            mapView.onPause();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mapView != null) {
+            mapView.onStart();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mapView != null) {
+            mapView.onStop();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        stopLocationUpdates();
+        timerHandler.removeCallbacksAndMessages(null);
+        if (mapView != null) {
+            mapView.onDestroy();
+            mapView = null;
+        }
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(stepSensorListener);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mapView != null) {
+            Bundle bundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY);
+            if (bundle == null) bundle = new Bundle();
+            mapView.onSaveInstanceState(bundle);
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, bundle);
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mapView != null) {
+            mapView.onLowMemory();
+        }
+    }
+
+
+    private final SensorEventListener stepSensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+
+            if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+                totalSensorSteps = (int) event.values[0];
+
+                if (waitingForFirstCounterEvent && trackingState == TrackingState.RUNNING) {
+                    stepsAtSessionStart = totalSensorSteps;
+                    waitingForFirstCounterEvent = false;
+                }
+
+                if (trackingState == TrackingState.RUNNING) {
+                    updateStats();
+                }
+            } else if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+                if (trackingState == TrackingState.RUNNING) {
+                    for (int i = 0; i < event.values.length; i++) {
+                        if (event.values[i] == 1.0f) {
+                            detectorAccumulatedSteps++;
+                        }
+                    }
+                    updateStats();
+                }
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+}

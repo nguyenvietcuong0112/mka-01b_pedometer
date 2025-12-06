@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- App bar -->
+    <LinearLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_70sdp"
+        android:background="@drawable/bg_header_blue"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:backgroundTint="@color/blue"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_pedometer"
+            />
+    </LinearLayout>
+
+    <!-- Content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp">
+
+            <!-- Tabs -->
+            <LinearLayout
+                android:id="@+id/tabContainer"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="4dp"
+                android:clipToPadding="false">
+
+                <TextView
+                    android:id="@+id/tab_steps"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tab_left_selected"
+                    android:gravity="center"
+                    android:text="Step"
+                    android:layout_marginEnd="@dimen/_3sdp"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_medium" />
+
+                <TextView
+                    android:id="@+id/tab_combo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:background="@drawable/bg_tab_right_unselected"
+                    android:gravity="center"
+                    android:text="Combo day"
+                    android:textColor="#A0A0A0"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_180sdp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_welcome"
+                android:gravity="center"
+                android:paddingTop="@dimen/_20sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/img_trophy"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_step_achievement" />
+
+                <TextView
+                    android:id="@+id/label_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Current steps"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/montserrat_bold" />
+
+                <TextView
+                    android:id="@+id/text_current_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="32sp"
+                    android:fontFamily="@font/montserrat_bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_share"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center"
+                android:text="Share"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:background="@drawable/bg_primary_button"
+                android:fontFamily="@font/montserrat_medium"
+                android:layout_marginBottom="24dp" />
+
+            <FrameLayout
+                android:id="@+id/frAds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <include layout="@layout/ads_shimmer_native_home" />
+
+            </FrameLayout>
+
+
+            <GridLayout
+                android:id="@+id/grid_achievements"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="4"
+                android:alignmentMode="alignMargins"
+                android:rowOrderPreserved="false">
+            </GridLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

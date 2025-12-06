@@ -1,0 +1,149 @@
+<resources>
+    <string name="app_name">Walk Log – Pedometer Counter</string>
+    <string name="steps">Steps</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="continue_text">Continue</string>
+    <string name="steps_goal_format">%1$d/%2$d Steps</string>
+    <string name="remaining_steps_format">Walk %1$d steps more to\ncomplete your daily goal</string>
+    <string name="kcal">Kcal</string>
+    <string name="min">Min</string>
+    <string name="km">Km</string>
+    <string name="target_steps_format">Target: %1$d steps</string>
+    <string name="monthly_steps_format">%d steps</string>
+    <string name="monthly_kcal_format">%.2f</string>
+    <string name="monthly_time_format">%s</string>
+    <string name="monthly_distance_format">%.2f</string>
+    <string name="activity_title">Activity</string>
+    <string name="start_tracking">Start</string>
+    <string name="start_running">Start Running</string>
+    <string name="back">Back</string>
+    <string name="pause_tracking">Pause</string>
+    <string name="resume_tracking">Resume</string>
+    <string name="finish_tracking">Finish</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="view_more">View more</string>
+    <string name="recent_activity_placeholder_title">Walking</string>
+    <string name="recent_activity_placeholder_time">–</string>
+    <string name="recent_activity_empty">No activity yet. Tap Start to begin.</string>
+    <string name="activity_permission_required">The app needs location permission to track distance.</string>
+    <string name="activity_tracking_error">Unable to start tracking. Please try again.</string>
+    <string-array name="statistic_options">
+        <item>Steps</item>
+        <item>Distance</item>
+        <item>Calories</item>
+    </string-array>
+
+
+    <string-array name="month_options">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+
+    <string name="note_guide1"></string>
+    <string name="note_guide2"></string>
+    <string name="note_guide3"></string>
+    <string name="note_guide4"></string>
+    <string name="languages">Languages</string>
+    <string name="please_select_language_to_continue">Please select language to continue</string>
+    <string name="this_action_can_contain_ads">This action can contain ads…</string>
+    <string name="guide">Guide</string>
+    <string name="step1">STEP 1</string>
+    <string name="step2">STEP 2</string>
+    <string name="step3">STEP 3</string>
+    <string name="step4">STEP 4</string>
+    <string name="step_detail1">Click the “continue” button to start walking</string>
+    <string name="step_detail2">Click the “continue” button to start walking</string>
+    <string name="step_detail3">Click the “continue” button to start walking</string>
+    <string name="step_detail4">Click the “continue” button to start walking</string>
+    <string name="interests">Interests</string>
+
+    <string name="monday_text"><font color='#000000'><b>M</b></font><font color='#5A5A5A'>onday</font></string>
+    <string name="tuesday_text"><font color='#000000'><b>T</b></font><font color='#5A5A5A'>uesday</font></string>
+    <string name="wednesday_text"><font color='#000000'><b>W</b></font><font color='#5A5A5A'>ednesday</font></string>
+    <string name="thursday_text"><font color='#000000'><b>T</b></font><font color='#5A5A5A'>hursday</font></string>
+    <string name="friday_text"><font color='#000000'><b>F</b></font><font color='#5A5A5A'>riday</font></string>
+    <string name="saturday_text"><font color='#000000'><b>S</b></font><font color='#5A5A5A'>aturday</font></string>
+    <string name="sunday_text"><font color='#000000'><b>S</b></font><font color='#5A5A5A'>unday</font></string>
+
+
+
+
+    <string name="hindi">Hindi</string>
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
+    <string name="french">French</string>
+    <string name="german">German</string>
+    <string name="italia">Italia</string>
+    <string name="portuguese">Portuguese</string>
+    <string name="korea">Korea</string>
+    <string name="indonesia">Indonesia</string>
+    <string name="mexico">Mexico</string>
+    <string name="russia">Russia</string>
+    <string name="poland">Poland</string>
+    <string name="japan">Japan</string>
+    <string name="turkey">Turkey</string>
+    <string name="iraq">Iraq</string>
+    <string name="ukraine">Ukraine</string>
+    <string name="argentina">Argentina</string>
+    <string name="kazakhstan">Kazakhstan</string>
+    <string name="arabic">Arabic</string>
+    <string name="english_us">English (US)</string>
+    <string name="english_uk">English (UK)</string>
+    <string name="english_canada">English (Canada)</string>
+    <string name="english_south_africa">English (South Africa)</string>
+    <string name="bengani">Bengani</string>
+    <string name="marathi">Marathi</string>
+    <string name="telugu">Telugu</string>
+    <string name="tamil">Tamil</string>
+    <string name="urdu">Urdu</string>
+    <string name="kannada">Kannada</string>
+    <string name="odia">Odia</string>
+    <string name="malayalam">Malayalam</string>
+    <string name="portuguese_brazil">Portuguese (Brazil)</string>
+    <string name="portuguese_europeu" translatable="false">Portuguese(Europeu)</string>
+    <string name="portuguese_angona" translatable="false">Portuguese(Angona)</string>
+    <string name="portuguese_mozambique" translatable="false">Portuguese(Mozambique)</string>
+    <string name="germany">Germany</string>
+    <string name="done">Done</string>
+    <string name="not_much_more_useful_nthan_the_defaults">Not much more useful\nthan the defaults</string>
+    <string name="unresponsive_or_laggy">Unresponsive or\nLaggy</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="note_continue1">Track Your Health Easily</string>
+    <string name="note_continue2">Stay on Top of Your Health</string>
+    <string name="note_continue3">Better Health Starts Here</string>
+    <string name="note_continue4">Understand Your Health Data</string>
+    <string name="note_description1">Monitor readings and stay informed every day.</string>
+    <string name="note_description2">Record daily stats and view clear insights.</string>
+    <string name="note_description3">Keep your readings organized and easy to review.</string>
+    <string name="note_description4">Manage your heart health with ease.</string>
+
+    <!-- Achievement -->
+    <string name="current_steps_label">Current steps</string>
+    <string name="current_combo_label">Current day</string>
+    <string name="badge_steps_format">Reach %1$d steps to achieve this badge</string>
+    <string name="badge_combo_format">Run %1$d day to achieve this badge</string>
+    <string name="share_achievement_text">My achievement today: %1$s in Pedometer!</string>
+    <string name="share_via">Share via</string>
+
+    <!-- Permissions -->
+    <string name="permission_description">Allow these permissions so we can count your steps and track distance accurately, even when the app is in the background.</string>
+    <string name="permission_grant_button">Continue</string>
+    <string name="permission_activity_title">Activity recognition</string>
+    <string name="permission_activity_desc">Needed to detect your steps.</string>
+    <string name="permission_location_title">Location</string>
+    <string name="permission_location_desc">Needed to measure distance during activities.</string>
+    <string name="permission_notification_title">Notifications</string>
+    <string name="permission_notification_desc">Used to show your daily progress.</string>
+</resources>
