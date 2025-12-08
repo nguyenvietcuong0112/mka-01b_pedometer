@@ -128,7 +128,7 @@
                     android:letterSpacing="0.05"
                     android:paddingVertical="8dp"
                     android:text="Next"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/_16sdp"
                     android:textStyle="bold" />
 

@@ -21,12 +21,12 @@ public class CustomCircularProgressBar extends View {
 
     private void init() {
         backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        backgroundPaint.setColor(0xFFDDE9FB); // #DDE9FB
+        backgroundPaint.setColor(0xFFFFFFFF); // #DDE9FB
         backgroundPaint.setStyle(Paint.Style.STROKE);
         backgroundPaint.setStrokeWidth(strokeWidth);
 
         progressPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        progressPaint.setColor(0xFF1E6BE6); // #1E6BE6
+        progressPaint.setColor(0xFFB5F076); // #B5F076
         progressPaint.setStyle(Paint.Style.STROKE);
         progressPaint.setStrokeWidth(strokeWidth);
         progressPaint.setStrokeCap(Paint.Cap.ROUND);

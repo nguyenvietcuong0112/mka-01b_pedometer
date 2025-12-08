@@ -98,10 +98,10 @@ public class AchievementFragment extends Fragment {
         boolean isSteps = currentMode == MODE_STEPS;
 
         tabSteps.setBackgroundResource(isSteps ? R.drawable.bg_tab_left_selected : R.drawable.bg_tab_right_unselected);
-        tabSteps.setTextColor(ContextCompat.getColor(requireContext(), isSteps ? android.R.color.white : android.R.color.darker_gray));
+        tabSteps.setTextColor(ContextCompat.getColor(requireContext(), isSteps ? android.R.color.black : android.R.color.darker_gray));
 
         tabCombo.setBackgroundResource(isSteps ? R.drawable.bg_tab_right_unselected : R.drawable.bg_tab_left_selected);
-        tabCombo.setTextColor(ContextCompat.getColor(requireContext(), isSteps ? android.R.color.darker_gray : android.R.color.white));
+        tabCombo.setTextColor(ContextCompat.getColor(requireContext(), isSteps ? android.R.color.darker_gray : android.R.color.black));
 
         labelCurrent.setText(isSteps ? R.string.current_steps_label : R.string.current_combo_label);
     }

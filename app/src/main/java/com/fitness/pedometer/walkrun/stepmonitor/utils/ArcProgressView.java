@@ -32,8 +32,8 @@ public class ArcProgressView extends View {
     private View badgeView;
 
     private int bgColor = 0xFFE6E9F5;
-    private int fgColorStart = 0xFF768CFE;
-    private int fgColorEnd = 0xFF4C6BFF;
+    private int fgColorStart = 0xFF42CB8C;
+    private int fgColorEnd = 0xFF42CB8C;
 
     private float cx, cy, radius;
 

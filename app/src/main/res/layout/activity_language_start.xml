@@ -6,121 +6,116 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF">
+        android:background="@drawable/bg_layout_app">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardToolbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="0dp"
+            android:paddingHorizontal="10dp"
+            android:background="@color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingVertical="15dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/title"
+            <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10dp"
-                android:background="#1E6BE6"
-                android:paddingVertical="15dp">
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat_bold"
+                android:maxLines="1"
+                android:text="@string/languages"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_20sdp"
+                app:layout_constraintTop_toTopOf="@+id/frSave"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/frSave"
+                />
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/please_select_language_to_continue"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10sdp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                />
+
+
+
+            <FrameLayout
+                android:id="@+id/frSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_centerVertical="true">
 
                 <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:maxLines="1"
-                    android:text="@string/languages"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_20sdp"
-
-                    app:layout_constraintTop_toTopOf="@+id/frSave"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@+id/frSave"
-                    />
-
-                <TextView
-                    android:id="@+id/tv_subtitle"
+                    android:id="@+id/btnSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/please_select_language_to_continue"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_10sdp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                  />
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/handAnim"
-                    android:layout_width="@dimen/_36sdp"
-                    android:layout_height="@dimen/_36sdp"
                     android:layout_alignParentEnd="true"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/frSave"
-                    app:layout_constraintBottom_toBottomOf="@+id/frSave"
-                    android:layout_gravity="end"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:alpha="0.5"
+                    android:background="@drawable/bg_done_language"
+                    android:paddingHorizontal="@dimen/_16sdp"
+                    android:paddingVertical="@dimen/_4sdp"
+                    android:text="@string/done"
+                    android:textColor="@color/black" />
+                <ProgressBar
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:id="@+id/progressSave"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:visibility="gone"
-                    app:lottie_rawRes="@raw/hand" />
-
-                <FrameLayout
-                    android:id="@+id/frSave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_centerVertical="true">
-
-                    <TextView
-                        android:id="@+id/btnSave"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="@dimen/_8sdp"
-                        android:alpha="0.5"
-                        android:background="@drawable/bg_done_language"
-                        android:paddingHorizontal="@dimen/_16sdp"
-                        android:paddingVertical="@dimen/_4sdp"
-                        android:text="@string/done"
-                        android:textColor="@color/white" />
-                    <ProgressBar
-                        android:layout_marginStart="@dimen/_16sdp"
-                        android:id="@+id/progressSave"
-                        style="?android:attr/progressBarStyleSmall"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:visibility="gone"
-                        android:indeterminate="true"
-                        android:indeterminateTint="#160077"/>
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/green"/>
 
 
 
 
-                </FrameLayout>
+            </FrameLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/handAnim"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:layout_alignParentEnd="true"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/frSave"
+                app:layout_constraintBottom_toBottomOf="@+id/frSave"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                app:lottie_rawRes="@raw/hand" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.fitness.pedometer.walkrun.stepmonitor.utils.language.UILanguageCustom
             android:id="@+id/uiLanguage"
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@color/transparent"
             android:layout_marginTop="@dimen/_12sdp"
             app:layout_constraintBottom_toTopOf="@+id/fr_ads"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardToolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/title" />
         <FrameLayout
             android:id="@+id/fr_ads"
             android:layout_width="match_parent"

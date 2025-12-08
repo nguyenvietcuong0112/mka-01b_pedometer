@@ -226,7 +226,7 @@ public class ReportFragment extends Fragment {
         switch (currentStatisticType) {
             case STATISTIC_DISTANCE:
                 datasetLabel = "Daily Distance (km)";
-                chartColor = getResources().getColor(R.color.colorAccent);
+                chartColor = getResources().getColor(R.color.green);
                 break;
             case STATISTIC_CALORIES:
                 datasetLabel = "Daily Calories (kcal)";
@@ -235,7 +235,7 @@ public class ReportFragment extends Fragment {
             case STATISTIC_STEPS:
             default:
                 datasetLabel = "Daily Steps";
-                chartColor = getResources().getColor(R.color.colorPrimary);
+                chartColor = getResources().getColor(R.color.green);
                 break;
         }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/bg_layout_app"
     android:orientation="vertical">
 
 
@@ -12,6 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingBottom="@dimen/_5sdp"
+        android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +22,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/transparent">
 
 
             <!-- Blue Header Bar -->
@@ -29,8 +31,7 @@
                 android:id="@+id/headerBar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_70sdp"
-                android:background="@drawable/bg_header_blue"
-                android:backgroundTint="@color/blue"
+                android:background="@color/transparent"
                 android:gravity="bottom"
                 android:orientation="horizontal"
                 android:paddingHorizontal="@dimen/_15sdp"
@@ -50,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="#FFFFFF"
+                android:background="@color/transparent"
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingBottom="@dimen/_10sdp"
@@ -61,7 +62,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_green_banner"
+                    android:background="@drawable/bg_card"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="@dimen/_12sdp">
@@ -349,7 +350,7 @@
                                 <ImageView
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
-                                    android:tint="#B9D1F7"
+                                    android:tint="#ADADAD"
                                     android:src="@drawable/ic_steps"/>
 
                                 <TextView
@@ -358,7 +359,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="6000 steps"
                                     android:textSize="14sp"
-                                    android:textColor="#B9D1F7"
+                                    android:textColor="#ADADAD"
                                     android:layout_marginStart="4dp"
                                     android:fontFamily="@font/montserrat_regular"/>
                             </LinearLayout>
@@ -401,7 +402,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:background="@drawable/bg_view_report_button"
+                    android:background="@drawable/bg_btn_install_intro2"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/_12sdp">
@@ -411,7 +412,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="View Report"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/black"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -673,6 +674,7 @@
                         android:layout_height="wrap_content"
                         android:text="Report"
                         android:textColor="#5A5A5A"
+                        android:fontFamily="@font/montserrat_bold"
                         android:textSize="@dimen/_12sdp" />
 
                     <View
@@ -685,7 +687,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Details"
-                        android:textColor="#5F7DED"
+                        android:textColor="@color/green"
                         android:textSize="@dimen/_12sdp"
                         android:textStyle="bold" />
                 </LinearLayout>

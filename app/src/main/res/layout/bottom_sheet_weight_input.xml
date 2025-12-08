@@ -141,7 +141,7 @@
             android:background="@drawable/bg_outline_button"
             android:fontFamily="@font/montserrat_bold"
             android:text="Cancel"
-            android:textColor="#5F7DED"
+            android:textColor="@color/green"
             android:textSize="16sp" />
 
         <Button
@@ -149,7 +149,7 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
-            android:background="@drawable/bg_view_report_button"
+            android:background="@drawable/bg_btn_install_intro2"
             android:fontFamily="@font/montserrat_bold"
             android:text="Save"
             android:textColor="#FFFFFF"

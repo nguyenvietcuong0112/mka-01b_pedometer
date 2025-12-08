@@ -107,19 +107,19 @@ public class BottomNavigationHelper {
         if (isSelected) {
             if (parentId == R.id.nav_steps) {
                 icon.setImageResource(R.drawable.ic_nav_steps);
-                text.setTextColor(0xFF5F7DED);
+                text.setTextColor(0xFF252525);
             } else if (parentId == R.id.nav_activity) {
                 icon.setImageResource(R.drawable.ic_nav_activity);
-                text.setTextColor(0xFF5F7DED);
+                text.setTextColor(0xFF252525);
             } else if (parentId == R.id.nav_report) {
                 icon.setImageResource(R.drawable.ic_nav_report);
-                text.setTextColor(0xFF5F7DED);
+                text.setTextColor(0xFF252525);
             } else if (parentId == R.id.nav_achievement) {
                 icon.setImageResource(R.drawable.ic_nav_achievement);
-                text.setTextColor(0xFF5F7DED);
+                text.setTextColor(0xFF252525);
             } else if (parentId == R.id.nav_settings) {
                 icon.setImageResource(R.drawable.ic_nav_settings);
-                text.setTextColor(0xFF5F7DED);
+                text.setTextColor(0xFF252525);
             }
         } else {
             if (parentId == R.id.nav_steps) {

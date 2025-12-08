@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/bg_layout_app">
 
     <LinearLayout
         android:id="@+id/headerBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_70sdp"
-        android:background="@drawable/bg_header_blue"
+        android:background="@color/transparent"
         android:gravity="bottom"
-        android:backgroundTint="@color/blue"
         android:orientation="horizontal"
         android:paddingHorizontal="@dimen/_15sdp"
         android:paddingVertical="@dimen/_12sdp"
@@ -123,6 +122,10 @@
                     android:layout_margin="4dp"
                     android:layout_weight="1"
                     app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardMaxElevation="0dp"
+                    android:background="@color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardUseCompatPadding="true">
 
                     <LinearLayout
@@ -166,6 +169,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:layout_weight="1"
+                    app:cardElevation="0dp"
+                    app:cardMaxElevation="0dp"
                     app:cardCornerRadius="16dp"
                     app:cardUseCompatPadding="true">
 
@@ -210,6 +215,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:layout_weight="1"
+                    app:cardElevation="0dp"
+                    app:cardMaxElevation="0dp"
                     app:cardCornerRadius="16dp"
                     app:cardUseCompatPadding="true">
 
@@ -254,6 +261,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:layout_weight="1"
+                    app:cardElevation="0dp"
+                    app:cardMaxElevation="0dp"
                     app:cardCornerRadius="16dp"
                     app:cardUseCompatPadding="true">
 
@@ -310,11 +319,11 @@
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:text="@string/start_tracking"
-                    android:background="@drawable/bg_button_primary"
+                    android:background="@drawable/bg_btn_install_intro2"
                     android:textAllCaps="false"
                     android:textSize="@dimen/_12sdp"
-                    android:textColor="@color/white"
-                    app:backgroundTint="@color/colorPrimary" />
+                    android:textColor="@color/black"
+                    app:backgroundTint="#B5F076" />
 
                 <ImageView
                     android:id="@+id/activityPauseButton"
@@ -396,7 +405,7 @@
                             android:layout_height="44dp"
                             android:layout_gravity="center_vertical"
                             android:background="@drawable/bg_circle_light"
-                            android:src="@drawable/ic_running" />
+                            android:src="@drawable/ic_running_home" />
 
                         <LinearLayout
                             android:layout_width="0dp"

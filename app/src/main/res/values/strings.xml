@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Walk Log – Pedometer Counter</string>
+    <string name="app_name">Step Diary – Daily Pedometer</string>
     <string name="steps">Steps</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
@@ -120,14 +120,14 @@
     <string name="not_much_more_useful_nthan_the_defaults">Not much more useful\nthan the defaults</string>
     <string name="unresponsive_or_laggy">Unresponsive or\nLaggy</string>
     <string name="uninstall">Uninstall</string>
-    <string name="note_continue1">Track Your Health Easily</string>
-    <string name="note_continue2">Stay on Top of Your Health</string>
-    <string name="note_continue3">Better Health Starts Here</string>
-    <string name="note_continue4">Understand Your Health Data</string>
-    <string name="note_description1">Monitor readings and stay informed every day.</string>
-    <string name="note_description2">Record daily stats and view clear insights.</string>
-    <string name="note_description3">Keep your readings organized and easy to review.</string>
-    <string name="note_description4">Manage your heart health with ease.</string>
+    <string name="note_continue1">Track Daily Steps</string>
+    <string name="note_continue2">Record Walk Routes</string>
+    <string name="note_continue3">Analyze Activity Trends</string>
+    <string name="note_continue4">Reach Daily Goals</string>
+    <string name="note_description1">Monitor your steps and calories with ease</string>
+    <string name="note_description2">Save and review your daily walking paths</string>
+    <string name="note_description3">See clear charts of your walking progress</string>
+    <string name="note_description4">Stay motivated, achieve your step targets</string>
 
     <!-- Achievement -->
     <string name="current_steps_label">Current steps</string>
@@ -138,6 +138,7 @@
     <string name="share_via">Share via</string>
 
     <!-- Permissions -->
+    <string name="permission">Permission</string>
     <string name="permission_description">Allow these permissions so we can count your steps and track distance accurately, even when the app is in the background.</string>
     <string name="permission_grant_button">Continue</string>
     <string name="permission_activity_title">Activity recognition</string>

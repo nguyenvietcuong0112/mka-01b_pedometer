@@ -18,7 +18,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         def formattedDate = new Date().format('MM.dd.yyyy')
-        archivesBaseName = "MKA01_Pedometer_v${versionName}_(${versionCode})_${formattedDate}"
+        archivesBaseName = "MKA01B_Pedometer_v${versionName}_(${versionCode})_${formattedDate}"
         bundle {
             language {
                 enableSplit = false
@@ -81,6 +81,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-config'
 
     //fb sdk
+    implementation 'com.google.ads.mediation:facebook:6.21.0.0'
     implementation 'com.facebook.android:facebook-android-sdk:18.1.3'
     implementation 'com.appsflyer:af-android-sdk:6.17.4'
     implementation 'com.appsflyer:adrevenue:6.9.1'

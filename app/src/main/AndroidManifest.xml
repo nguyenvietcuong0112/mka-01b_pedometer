@@ -151,7 +151,7 @@
             android:value="true" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA-ZwZgFpsYEEh7Dmak2lTGthZ2QZFng0w" />
+            android:value="AIzaSyAzNVKlbTzflH-nhpjT8YWWrAjMpQGOZCA" />
 
     </application>
 

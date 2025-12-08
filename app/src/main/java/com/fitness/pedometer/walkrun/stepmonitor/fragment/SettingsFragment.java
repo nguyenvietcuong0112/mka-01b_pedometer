@@ -84,7 +84,7 @@ public class SettingsFragment extends Fragment {
         });
 
         binding.btnPrivacyPolicy.setOnClickListener(v -> {
-            Uri uri = Uri.parse("https://pedometer-mka01.vercel.app/policy");
+            Uri uri = Uri.parse("https://pedometer-mka01b.vercel.app/policy");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });

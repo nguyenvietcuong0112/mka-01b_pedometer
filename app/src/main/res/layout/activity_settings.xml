@@ -6,17 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@drawable/bg_layout_app">
 
     <!-- App bar -->
     <LinearLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_70sdp"
-        android:background="@drawable/bg_header_blue"
+        android:background="@color/transparent"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:backgroundTint="@color/blue"
         android:paddingHorizontal="@dimen/_15sdp"
         android:paddingVertical="@dimen/_12sdp"
         app:layout_constraintTop_toTopOf="parent">

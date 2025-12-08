@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1095731176076",
-    "project_id": "mka-01-pedometer",
-    "storage_bucket": "mka-01-pedometer.firebasestorage.app"
+    "project_number": "501970898840",
+    "project_id": "mka01b-pedometer",
+    "storage_bucket": "mka01b-pedometer.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1095731176076:android:c78e96f86d9f92be4291a9",
+        "mobilesdk_app_id": "1:501970898840:android:855958cdbfd18dce7525ed",
         "android_client_info": {
           "package_name": "com.fitness.pedometer.walkrun.stepmonitor"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA-ZwZgFpsYEEh7Dmak2lTGthZ2QZFng0w"
+          "current_key": "AIzaSyAzNVKlbTzflH-nhpjT8YWWrAjMpQGOZCA"
         }
       ],
       "services": {

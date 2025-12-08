@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_splash"
+    android:background="@drawable/bg_layout_app"
     android:orientation="vertical"
     tools:ignore="ExtraText">
 
@@ -28,7 +28,7 @@
         android:fontFamily="@font/montserrat_bold"
         android:gravity="center"
         android:text="@string/app_name"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
