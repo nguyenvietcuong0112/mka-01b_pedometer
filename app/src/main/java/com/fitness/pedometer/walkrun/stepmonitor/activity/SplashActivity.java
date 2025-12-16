@@ -6,8 +6,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
+import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
+import com.fitness.pedometer.walkrun.stepmonitor.notiSpecial.WakeService;
 import com.google.android.gms.ads.LoadAdError;
 import com.mallegan.ads.callback.InterCallback;
 import com.mallegan.ads.util.Admob;
@@ -23,6 +27,8 @@ import com.fitness.pedometer.walkrun.stepmonitor.utils.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class SplashActivity extends BaseActivity {
@@ -69,32 +75,73 @@ public class SplashActivity extends BaseActivity {
                 }
             }
         };
-//        notificationPermissionLauncher = registerForActivityResult(
-//                new ActivityResultContracts.RequestPermission(),
-//                isGranted -> {
-//                    if (isGranted) {
-//                        try {
-//                            Intent serviceIntent = new Intent(this, WakeService.class);
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                                startForegroundService(serviceIntent);
-//                            } else {
-//                                startService(serviceIntent);
-//                            }
-//                        } catch (Exception e) {
-//                            // Silently handle any exceptions
-//                        }
-//                    }
-//                    setUpConsentAndShowAds();
-//                }
-//        );
-//        if (SystemUtil.checkPermissionNoty(SplashActivity.this)) {
-//            setUpConsentAndShowAds();
-//            startWakeService();
-//        } else {
-//            requestNotificationPermission();
-//        }
-//        checkFullAds();
+        notificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        try {
+                            Intent serviceIntent = new Intent(this, WakeService.class);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(serviceIntent);
+                            } else {
+                                startService(serviceIntent);
+                            }
+                        } catch (Exception e) {
+                            // Silently handle any exceptions
+                        }
+                    }
+                    setUpConsentAndShowAds();
+                }
+        );
+        if (SystemUtil.checkPermissionNoty(SplashActivity.this)) {
+            setUpConsentAndShowAds();
+            startWakeService();
+        } else {
+            requestNotificationPermission();
+        }
+        checkFullAds();
         setUpConsentAndShowAds();
+
+    }
+
+    private void checkFullAds() {
+        if (SharePreferenceUtils.isOrganicNoti(this)) {
+            AppsFlyerLib.getInstance().registerConversionListener(this, new AppsFlyerConversionListener() {
+
+                @Override
+                public void onConversionDataSuccess(Map<String, Object> conversionData) {
+                    String mediaSource = (String) conversionData.get("media_source");
+                    SharePreferenceUtils.setOrganicNoti(getApplicationContext(), Objects.requireNonNull(mediaSource).isEmpty() || "organic".equals(mediaSource));
+                }
+
+                @Override
+                public void onConversionDataFail(String s) {
+                }
+
+                @Override
+                public void onAppOpenAttribution(Map<String, String> map) {
+
+                }
+
+                @Override
+                public void onAttributionFailure(String s) {
+
+                }
+            });
+        }
+    }
+
+    private void startWakeService() {
+        try {
+            Intent serviceIntent = new Intent(this, WakeService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+        } catch (Exception e) {
+            // Silently handle any exceptions
+        }
 
     }
 

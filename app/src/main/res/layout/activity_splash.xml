@@ -78,7 +78,7 @@
             android:layout_marginBottom="@dimen/_30sdp"
             android:fontFamily="@font/montserrat_medium"
             android:text="@string/this_action_can_contain_ads"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="14sp" />
     </RelativeLayout>
     >

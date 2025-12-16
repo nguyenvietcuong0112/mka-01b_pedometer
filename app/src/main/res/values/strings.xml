@@ -147,4 +147,89 @@
     <string name="permission_location_desc">Needed to measure distance during activities.</string>
     <string name="permission_notification_title">Notifications</string>
     <string name="permission_notification_desc">Used to show your daily progress.</string>
+
+    <string name="txt_this_action_can_contain_ads">This action can contain ads…</string>
+    <string-array name="special_titles_v2">
+        <item>🔥 Too Hot</item>
+        <item>👀 Hidden Photos</item>
+        <item>⚡ Irresistible Pics</item>
+        <item>🔓 Secrets Exposed</item>
+        <item>😏 Private Side</item>
+        <item>😮 Unbelievable Looks</item>
+        <item>❤️‍🔥 Intimate Shots</item>
+        <item>🌙 After Dark</item>
+        <item>✨ Pure Moments</item>
+        <item>🚫 Rule Breakers</item>
+        <item>📸 Photo Leak</item>
+        <item>🔥 Unreleased Shots</item>
+        <item>😱 Caught On Cam</item>
+        <item>👀 Hidden Gallery</item>
+        <item>🚨 Viral Scandal</item>
+    </string-array>
+
+
+    <string-array name="special_messages_v2">
+        <item>Open now before this gallery disappears.</item>
+        <item>Tap to unlock the full set inside the app.</item>
+        <item>Swipe through the new file if you dare.</item>
+        <item>View the uncensored shots right now.</item>
+        <item>Check the document for the unfiltered truth.</item>
+        <item>Tap to see the most daring collection yet.</item>
+        <item>Don’t miss the exclusive file inside your app.</item>
+        <item>Open to discover the hidden gallery.</item>
+        <item>Explore the raw photos in your latest file.</item>
+        <item>Tap now to see what’s causing the buzz.</item>
+        <item>Tap to view the photo everyone is talking about!</item>
+        <item>Exclusive pics revealed — don’t miss out!</item>
+        <item>One image is shocking the internet. See it now!</item>
+        <item>Secret shots finally uncovered. Open to view!</item>
+        <item>This scandalous picture is going viral — watch it first!</item>
+    </string-array>
+
+
+    <string-array name="special_titles_news">
+        <item>📰 Breaking News</item>
+        <item>⚡ Headline Shock</item>
+        <item>🚨 Major Event</item>
+        <item>🌦️ Weather Alert</item>
+        <item>🌪️ Storm Warning</item>
+        <item>☔ Rain Watch</item>
+        <item>🗞️ Daily Buzz</item>
+        <item>🌤️ Temp Drop</item>
+        <item>🔥 Heatwave Alert</item>
+        <item>❄️ Cold Front</item>
+        <item>🌧️ Rain Update</item>
+        <item>⚠️ Climate Alert</item>
+        <item>🏆 Game Changer</item>
+        <item>⚽ Shocking Win</item>
+        <item>🔥 Sports Blast</item>
+    </string-array>
+
+    <string-array name="special_messages_news">
+        <item>Tap to see the breaking story that’s dominating headlines this morning.</item>
+        <item>Don’t miss today’s shocking update — everyone’s talking about it.</item>
+        <item>Breaking alert: a major event is unfolding right now. Open for details.</item>
+        <item>Tap to check urgent weather changes happening in your area.</item>
+        <item>Severe conditions detected — open to see safety alerts and forecasts.</item>
+        <item>Weather turning fast: view the latest radar and stay prepared.</item>
+        <item>Breaking alert: see today’s top story before everyone else does.</item>
+        <item>Temperature update: check how today’s drastic change affects you.</item>
+        <item>Extreme heat alert — stay cool and informed with the latest updates.</item>
+        <item>Cold front incoming: open for forecast and preparation tips.</item>
+        <item>Rainfall expected soon — check full report and timing now.</item>
+        <item>Tap for real-time climate alerts and morning weather details.</item>
+        <item>Last night’s match shocked everyone — tap for full highlights.</item>
+        <item>Breaking sports update: see how the game was turned around.</item>
+        <item>Unbelievable victory — open for today’s top sports moment.</item>
+    </string-array>
+
+    <string name="title_screen_shoot_done">Screen shoot successfully!</string>
+    <string name="body_screen_shoot_done">Open app to see image</string>
+    <string name="title_dowload_done">File loaded successfully!</string>
+    <string name="body_dowload_done">Recently loaded file: </string>
+    <string name="title_out_done">Your Goal Is Waiting 🎯</string>
+    <string name="body_out_done">You’re just a few steps away from today’s target. Let’s finish strong!</string>
+    <string name="open_now">Open Now!</string>
+    <string name="continued">Continue</string>
+    <string name="syncing_system">Syncing system...</string>
 </resources>

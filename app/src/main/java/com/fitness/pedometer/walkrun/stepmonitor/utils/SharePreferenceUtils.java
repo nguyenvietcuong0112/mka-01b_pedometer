@@ -46,6 +46,18 @@ public class SharePreferenceUtils {
         return !Admob.getInstance().isLoadFullAds();
     }
 
+    public static boolean isOrganicNoti(Context context) {
+        SharedPreferences pref = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        return pref.getBoolean("organic_noti", true);
+    }
+
+
+    public static void setOrganicNoti(Context context, boolean value) {
+        SharedPreferences pre = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pre.edit();
+        editor.putBoolean("organic_noti", value);
+        editor.apply();
+    }
 
     public int getCurrentValue() {
         return sharePreference.getInt(COUNTER_KEY, 0);

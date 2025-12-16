@@ -1,11 +1,17 @@
 package com.fitness.pedometer.walkrun.stepmonitor.activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +36,8 @@ import com.fitness.pedometer.walkrun.stepmonitor.utils.SharePreferenceUtils;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private static final String TAG_HOME = "home";
     private static final String TAG_ACTIVITY = "activity";
     private static final String TAG_REPORT = "report";
@@ -53,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        hideNavigationBar();
 
         if (!PermissionActivity.hasAllRequiredPermissions(this)) {
             Intent intent = new Intent(this, PermissionActivity.class);
@@ -91,12 +102,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startStepServiceIfNeeded() {
-        Intent serviceIntent = new Intent(this, StepCounterService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
+        // Check if service is already running
+        if (isServiceRunning(StepCounterService.class)) {
+            Log.d(TAG, "StepCounterService is already running");
+            return;
         }
+
+        Intent serviceIntent = new Intent(this, StepCounterService.class);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+                Log.d(TAG, "Started StepCounterService as foreground service");
+            } else {
+                startService(serviceIntent);
+                Log.d(TAG, "Started StepCounterService as background service");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to start StepCounterService", e);
+            // Service will be started again when app is opened next time
+        }
+    }
+
+    /**
+     * Check if a service is currently running
+     */
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (manager != null) {
+            try {
+                for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                    if (serviceClass.getName().equals(service.service.getClassName())) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking if service is running", e);
+            }
+        }
+        return false;
     }
 
     private void setupBottomNavigation() {
@@ -301,6 +344,28 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         cancelScheduledInter();
         interHandler.removeCallbacksAndMessages(null);
+    }
+
+    private void hideNavigationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // For Android 11 and later
+            Window window = getWindow();
+            window.setDecorFitsSystemWindows(false);
+            WindowInsetsController insetsController = window.getInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.navigationBars());
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            );
+        }
     }
 
 }

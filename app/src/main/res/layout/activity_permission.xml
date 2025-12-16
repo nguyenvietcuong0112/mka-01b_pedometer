@@ -188,8 +188,18 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
         android:enabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/frAds"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/frAds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include layout="@layout/ads_shimmer_native_home" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

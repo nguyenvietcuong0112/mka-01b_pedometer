@@ -43,12 +43,16 @@
 <!--        <string name="banner_inline_intro" translatable="false">ca-app-pub-3940256099942544/9214589741</string>-->
 
 
+
 <!--        <string name="native_full_intro" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--        <string name="native_full_language" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--        <string name="open_splash_uninstall" translatable="false">ca-app-pub-3940256099942544/9257395921</string>-->
 <!--        <string name="native_full_splash_uninstall" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--        <string name="native_keep_user" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--        <string name="native_language_select_high" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+
+<!--        <string name="native_permission" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--        <string name="native_profile" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 
 <!--        <string name="native_full_intro2" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--        <string name="native_full_intro3" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
@@ -58,6 +62,11 @@
 <!--        <string name="native_full_splash" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 <!--        <string name="open_resume" translatable="false">ca-app-pub-3940256099942544/9257395921</string>-->
 
+<!--        <string name="native_full_splash_noti_full_screen" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--        <string name="native_full_splash_noti_full_screen_high" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--        <string name="open_splash_noti_full_screen" translatable="false">ca-app-pub-3940256099942544/9257395921</string>-->
+<!--        <string name="native_full_splash_noti" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--        <string name="open_splash_noti" translatable="false">ca-app-pub-3940256099942544/9257395921</string>-->
 
 <!--        <string name="AF_DEV_KEY" translatable="false">LikYKU2zUYTct7BoQ7MuJY</string>-->
 <!--        <string name="facebook_app_id" translatable="false">1234</string>-->
@@ -124,14 +133,14 @@
     <string name="inter_splash_high" translatable="false">ca-app-pub-5839511744003864/3072094899</string>
 
     <string name="inter_steps" translatable="false">ca-app-pub-5839511744003864/2663068183</string>
-    <string name="inter_finish" translatable="false"></string>
+    <string name="inter_finish" translatable="false">ca-app-pub-5839511744003864/4705480424</string>
     <string name="inter_home" translatable="false">ca-app-pub-5839511744003864/5289231527</string>
 
     <string name="native_onboarding1" translatable="false">ca-app-pub-5839511744003864/1575180399</string>
     <string name="native_onboarding4" translatable="false">ca-app-pub-5839511744003864/7710834596</string>
 
-    <string name="native_full_inter_steps" translatable="false"></string>
-    <string name="native_full_inter_finish" translatable="false"></string>
+    <string name="native_full_inter_steps" translatable="false">ca-app-pub-5839511744003864/4519161050</string>
+    <string name="native_full_inter_finish" translatable="false">ca-app-pub-5839511744003864/8598006863</string>
     <string name="native_full_inter_home" translatable="false">ca-app-pub-5839511744003864/4757930245</string>
 
     <string name="native_language" translatable="false">ca-app-pub-5839511744003864/9470924230</string>
@@ -144,7 +153,7 @@
     <string name="native_collap_home" translatable="false">ca-app-pub-5839511744003864/2635874375</string>
 
     <string name="native_activity" translatable="false">ca-app-pub-5839511744003864/4578785081</string>
-    <string name="native_weight" translatable="false"></string>
+    <string name="native_weight" translatable="false">ca-app-pub-5839511744003864/1892997719</string>
     <string name="native_achievement" translatable="false">ca-app-pub-5839511744003864/1322792701</string>
     <string name="native_step_goal" translatable="false">ca-app-pub-5839511744003864/7616738319</string>
     <string name="native_popup_exit" translatable="false">ca-app-pub-5839511744003864/8832906627</string>
@@ -156,8 +165,18 @@
     <string name="native_full_language" translatable="false">ca-app-pub-5839511744003864/1336997934</string>
     <string name="open_splash_uninstall" translatable="false">ca-app-pub-5839511744003864/5324344401</string>
     <string name="native_full_splash_uninstall" translatable="false"></string>
-    <string name="native_keep_user" translatable="false"></string>
+    <string name="native_keep_user" translatable="false">ca-app-pub-5839511744003864/2542351511</string>
     <string name="native_language_select_high" translatable="false">ca-app-pub-5839511744003864/8132849881</string>
+
+    <string name="native_permission" translatable="false">ca-app-pub-5839511744003864/3038558421</string>
+    <string name="native_profile" translatable="false">ca-app-pub-5839511744003864/9911088534</string>
+
+
+    <string name="native_full_splash_noti_full_screen" translatable="false">ca-app-pub-5839511744003864/9072017729</string>
+    <string name="native_full_splash_noti_full_screen_high" translatable="false">ca-app-pub-5839511744003864/6445854380</string>
+    <string name="open_splash_noti_full_screen" translatable="false">ca-app-pub-5839511744003864/3172613699</string>
+    <string name="native_full_splash_noti" translatable="false">ca-app-pub-5839511744003864/1859532029</string>
+    <string name="open_splash_noti" translatable="false">ca-app-pub-5839511744003864/2698181063</string>
 
     <string name="native_full_intro2" translatable="false">ca-app-pub-5839511744003864/5531679225</string>
     <string name="native_full_intro3" translatable="false">ca-app-pub-5839511744003864/4218597558</string>

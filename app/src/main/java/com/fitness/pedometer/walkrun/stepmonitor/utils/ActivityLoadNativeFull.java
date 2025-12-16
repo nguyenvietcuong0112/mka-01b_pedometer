@@ -29,7 +29,7 @@ public class ActivityLoadNativeFull extends BaseActivity {
         if (getIntent().hasExtra(EXTRA_NATIVE_AD_ID)) {
             adId = getIntent().getStringExtra(EXTRA_NATIVE_AD_ID);
         } else {
-            adId = getString(Integer.parseInt(""));
+            adId = "";
         }
 
         loadNativeFull(adId);

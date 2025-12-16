@@ -1,14 +1,26 @@
 package com.fitness.pedometer.walkrun.stepmonitor.utils;
 
+import static android.Manifest.permission.POST_NOTIFICATIONS;
+
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+
+import androidx.core.content.ContextCompat;
+
+import com.fitness.pedometer.walkrun.stepmonitor.notiSpecial.WakeService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -142,5 +154,49 @@ public class SystemUtil {
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    private static void startCheckingPermissionNoti(Activity mContext, Class<?> nextActivityClass) {
+        Handler handler = new Handler();
+        Runnable checkPermissionTask = new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(mContext, POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                        try {
+                            Intent serviceIntent = new Intent(mContext, WakeService.class);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                mContext.startForegroundService(serviceIntent);
+                            } else {
+                                mContext.startService(serviceIntent);
+                            }
+                        } catch (Exception e) {
+                            // Silently handle any exceptions
+                        }
+                        backToAppNoti(mContext,nextActivityClass);
+                    } else {
+                        handler.postDelayed(this, 300);
+                    }
+                }
+            }
+        };
+        handler.postDelayed(checkPermissionTask, 300);
+    }
+    private static void backToAppNoti(Activity mContext,Class<?> nextActivityClass) {
+        Intent intent = new Intent(mContext, nextActivityClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        mContext.startActivity(intent);
+    }
+
+    public static boolean checkPermissionNoty(Context mContext) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            return ContextCompat.checkSelfPermission(
+                    mContext,
+                    Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            return true;
+        }
     }
 }

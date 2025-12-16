@@ -2,6 +2,9 @@ package com.fitness.pedometer.walkrun.stepmonitor.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -15,6 +18,11 @@ import com.fitness.pedometer.walkrun.stepmonitor.R;
 import com.fitness.pedometer.walkrun.stepmonitor.fragment.ProfileGenderFragment;
 import com.fitness.pedometer.walkrun.stepmonitor.fragment.ProfileInfoFragment;
 import com.fitness.pedometer.walkrun.stepmonitor.utils.ProfileDataManager;
+import com.fitness.pedometer.walkrun.stepmonitor.utils.SharePreferenceUtils;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
+import com.mallegan.ads.callback.NativeCallback;
+import com.mallegan.ads.util.Admob;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -26,6 +34,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private boolean isEditMode = false;
+    private FrameLayout frAds;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,8 @@ public class ProfileActivity extends AppCompatActivity {
         adapter = new ProfilePagerAdapter(this);
         viewPager.setAdapter(adapter);
         viewPager.setUserInputEnabled(isEditMode);
+        frAds = findViewById(R.id.frAds);
+
 
         if (isEditMode) {
             viewPager.setCurrentItem(1, false);
@@ -60,6 +72,8 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         });
+        loadAds();
+
     }
 
     @Override
@@ -158,6 +172,31 @@ public class ProfileActivity extends AppCompatActivity {
         public int getItemCount() {
             return 2;
         }
+    }
+    private void loadAds() {
+        Admob.getInstance().loadNativeAd(this, getString(R.string.native_profile), new NativeCallback() {
+
+            @Override
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+                super.onNativeAdLoaded(nativeAd);
+                NativeAdView adView = new NativeAdView(ProfileActivity.this);
+                if (!SharePreferenceUtils.isOrganic(ProfileActivity.this)) {
+                    adView = (NativeAdView) LayoutInflater.from(ProfileActivity.this).inflate(R.layout.layout_native_btn_top, null);
+                } else {
+                    adView = (NativeAdView) LayoutInflater.from(ProfileActivity.this).inflate(R.layout.layout_native_btn_bottom, null);
+                }
+                frAds.removeAllViews();
+                frAds.addView(adView);
+                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
+            }
+
+
+            @Override
+            public void onAdFailedToLoad() {
+                super.onAdFailedToLoad();
+                frAds.setVisibility(View.GONE);
+            }
+        });
     }
 }
 

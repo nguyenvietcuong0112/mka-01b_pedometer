@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +17,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.fitness.pedometer.walkrun.stepmonitor.R;
+import com.fitness.pedometer.walkrun.stepmonitor.utils.SharePreferenceUtils;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
+import com.mallegan.ads.callback.NativeCallback;
+import com.mallegan.ads.util.Admob;
 
 public class PermissionActivity extends AppCompatActivity {
 
@@ -23,6 +31,8 @@ public class PermissionActivity extends AppCompatActivity {
     private SwitchCompat switchLocation;
     private SwitchCompat switchNotification;
     private Button btnGrant;
+    private FrameLayout frAds;
+
 
     private String[] getRequiredPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -81,6 +91,7 @@ public class PermissionActivity extends AppCompatActivity {
         switchActivity = findViewById(R.id.switchActivity);
         switchLocation = findViewById(R.id.switchLocation);
         switchNotification = findViewById(R.id.switchNotification);
+        frAds = findViewById(R.id.frAds);
 
 
         switchActivity.setOnClickListener(v -> requestActivityPermission());
@@ -100,6 +111,8 @@ public class PermissionActivity extends AppCompatActivity {
         });
 
         updatePermissionUI();
+        loadAds();
+
     }
 
     @Override
@@ -169,6 +182,31 @@ public class PermissionActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+    }
+    private void loadAds() {
+        Admob.getInstance().loadNativeAd(this, getString(R.string.native_permission), new NativeCallback() {
+
+            @Override
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+                super.onNativeAdLoaded(nativeAd);
+                NativeAdView adView = new NativeAdView(PermissionActivity.this);
+                if (!SharePreferenceUtils.isOrganic(PermissionActivity.this)) {
+                    adView = (NativeAdView) LayoutInflater.from(PermissionActivity.this).inflate(R.layout.layout_native_btn_top, null);
+                } else {
+                    adView = (NativeAdView) LayoutInflater.from(PermissionActivity.this).inflate(R.layout.layout_native_btn_bottom, null);
+                }
+                frAds.removeAllViews();
+                frAds.addView(adView);
+                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
+            }
+
+
+            @Override
+            public void onAdFailedToLoad() {
+                super.onAdFailedToLoad();
+                frAds.setVisibility(View.GONE);
+            }
+        });
     }
 }
 

@@ -3,6 +3,7 @@ package com.fitness.pedometer.walkrun.stepmonitor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.content.res.Configuration;
@@ -10,7 +11,14 @@ import android.content.res.Resources;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 
+import com.appsflyer.AppsFlyerConversionListener;
 import com.facebook.FacebookSdk;
+import com.fitness.pedometer.walkrun.stepmonitor.activity.nativefull.ActivityLoadNativeFullV2;
+import com.fitness.pedometer.walkrun.stepmonitor.activity.nativefull.ActivityLoadNativeFullV3;
+import com.fitness.pedometer.walkrun.stepmonitor.activity.nativefull.ActivityLoadNativeFullV5;
+import com.fitness.pedometer.walkrun.stepmonitor.notiSpecial.AppInstallReceiver;
+import com.fitness.pedometer.walkrun.stepmonitor.notiSpecial.UserPresentReceiver;
+import com.fitness.pedometer.walkrun.stepmonitor.utils.SharePreferenceUtils;
 import com.google.firebase.FirebaseApp;
 import com.mallegan.ads.util.AdsApplication;
 import com.mallegan.ads.util.AppOpenManager;
@@ -24,12 +32,14 @@ import com.fitness.pedometer.walkrun.stepmonitor.activity.SplashActivityUninstal
 import com.fitness.pedometer.walkrun.stepmonitor.activity.fragmentIntro.IntroActivityNew;
 import com.fitness.pedometer.walkrun.stepmonitor.utils.AppActivityTracker;
 import com.fitness.pedometer.walkrun.stepmonitor.R;
+import com.mallegan.ads.util.PreferenceManager;
 //import com.stepcounter.healthapplines.pedometer.steptracker.com.fitness.pedometer.walkrun.stepmonitor.utils.TimerManager;
 
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MyApplication extends AdsApplication {
 
@@ -56,6 +66,17 @@ public class MyApplication extends AdsApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        registerReceiver(new UserPresentReceiver(), filter);
+        IntentFilter appInstallFilter = new IntentFilter();
+        appInstallFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        appInstallFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        appInstallFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        appInstallFilter.addDataScheme("package");
+        registerReceiver(new AppInstallReceiver(), appInstallFilter);
         FirebaseApp.initializeApp(this);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(LanguageActivity.class);
@@ -63,11 +84,44 @@ public class MyApplication extends AdsApplication {
         AppOpenManager.getInstance().disableAppResumeWithActivity(IntroActivityNew.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ProfileActivity.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(PermissionActivity.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivityUninstall.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(ActivityLoadNativeFullV2.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(ActivityLoadNativeFullV3.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(ActivityLoadNativeFullV5.class);
 
         FacebookSdk.setClientToken(getString(R.string.facebook_client_token));
 
-        AppsFlyer.getInstance().initAppFlyer(this, getString(R.string.AF_DEV_KEY), true);
-        AppActivityTracker.getInstance().register(this);
+        if (!SharePreferenceUtils.isOrganicNoti(getApplicationContext())) {
+            AppsFlyer.getInstance().initAppFlyer(this, getString(R.string.AF_DEV_KEY), true);
+
+        } else {
+            AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
+                @Override
+                public void onConversionDataSuccess(Map<String, Object> conversionData) {
+                    String mediaSource = (String) conversionData.get("media_source");
+
+                    SharePreferenceUtils.setOrganicNoti(getApplicationContext(), mediaSource == null || mediaSource.isEmpty() || mediaSource.equals("organic"));
+                }
+
+                @Override
+                public void onConversionDataFail(String errorMessage) {
+                    // Handle conversion data failure
+                }
+
+                @Override
+                public void onAppOpenAttribution(Map<String, String> attributionData) {
+                    // Handle app open attribution
+                }
+
+                @Override
+                public void onAttributionFailure(String errorMessage) {
+                    // Handle attribution failure
+                }
+            };
+            PreferenceManager.getInstance().putBoolean("is_admob_network_full_ads", true);
+            AppsFlyer.getInstance().initAppFlyer(this, getString(R.string.AF_DEV_KEY), true, conversionListener);
+
+        }
 
     }
     @Override

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/llRoot"
+    android:background="@drawable/bg_green_banner"
+    android:paddingTop="5dp"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/actionHome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_nav_steps" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video Call"
+            android:paddingBottom="3dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_8sdp" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_width="1dp"
+        android:layout_height="32dp"
+        android:src="@drawable/divider_vertical" />
+
+    <LinearLayout
+        android:id="@+id/actionRecent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_nav_activity" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Message Frank"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingBottom="3dp"
+            android:textSize="@dimen/_8sdp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="1dp"
+        android:layout_height="32dp"
+        android:src="@drawable/divider_vertical" />
+
+    <LinearLayout
+        android:id="@+id/actionTools"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_nav_achievement" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Frank Call"
+            android:paddingBottom="3dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_8sdp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="1dp"
+        android:layout_height="32dp"
+        android:src="@drawable/divider_vertical" />
+
+</LinearLayout>
