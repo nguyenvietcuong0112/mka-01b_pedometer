@@ -100,7 +100,6 @@ public class SplashActivity extends BaseActivity {
             requestNotificationPermission();
         }
         checkFullAds();
-        setUpConsentAndShowAds();
 
     }
 
